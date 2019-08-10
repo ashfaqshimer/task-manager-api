@@ -71,19 +71,6 @@ router.get('/users/me', auth, async (req, res) => {
 	res.send(req.user);
 });
 
-// router.get('/users/:id', async (req, res) => {
-// 	const _id = req.params.id;
-// 	try {
-// 		const user = await User.findById(_id);
-// 		if (!user) {
-// 			return res.status(404).send({ error: 'No user matching that id' });
-// 		}
-// 		res.send(user);
-// 	} catch (err) {
-// 		res.status(500).send(err);
-// 	}
-// });
-
 router.patch('/users/me', auth, async (req, res) => {
 	const updates = Object.keys(req.body);
 	const allowedUpdates = [ 'name', 'email', 'age', 'password' ];
@@ -98,9 +85,7 @@ router.patch('/users/me', auth, async (req, res) => {
 		updates.forEach((update) => (userToUpdate[update] = req.body[update]));
 
 		const user = await userToUpdate.save();
-		// if (!userToUpdate) {
-		// 	return res.status(404).send({ error: 'No user with that id.' });
-		// }
+
 		res.send(user);
 	} catch (err) {
 		res.status(400).send(err);
@@ -127,10 +112,6 @@ router.post(
 
 router.delete('/users/me', auth, async (req, res) => {
 	try {
-		// const user = await User.findByIdAndDelete(_id);
-		// if (!user) {
-		// 	return res.status(404).send({ error: 'No user with that id.' });
-		// }
 		const user = await req.user.remove();
 		sendLeavingEmail(user.email, req.user.name);
 		res.send(user);
